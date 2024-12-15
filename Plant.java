@@ -15,32 +15,49 @@ public class Plant {
 	}
 
 	public Plant(String name, double tempFahrenheit, String uses) throws IllegalArgumentException {
-		if(!this.setName(name)) {
+		if (!this.setName(name)) {
 			throw new IllegalArgumentException("Invalid name value passed: " + name);
 		}
-		if(!this.setTempFahrenheit(tempFahrenheit)) {
+		if (!this.setTempFahrenheit(tempFahrenheit)) {
 			throw new IllegalArgumentException("Invalid temperature (F) value passed: " + tempFahrenheit);
 		}
-		if(!this.setUses(uses)) {
+		if (!this.setUses(uses)) {
 			throw new IllegalArgumentException("Invalid uses value passed: " + uses);
 		}
 	}
 
 	public Plant(Plant original) throws IllegalArgumentException {
-		if(original == null) {
+		if (original == null) {
 			throw new IllegalArgumentException("Invalid Plant object to copy passed (null)");
 		}
 		this.setAll(original.name, original.tempFahrenheit, original.uses);
 	}
 
-	//TODO: Step 1 = CSV string constructor
+	// TODO: Step 1 = CSV string constructor
+	public Plant(String csvLine) throws IllegalArgumentException {
+		if (csvLine == null || csvLine.isEmpty()) {
+			throw new IllegalArgumentException("Invalid CSV line passed: " + csvLine);
+		}
 
+		String[] parts = csvLine.split(",");
+		if (parts.length != 3) {
+			throw new IllegalArgumentException("CSV line does not contain exactly 3 parts: " + csvLine);
+		}
 
+		try {
+			String name = parts[0].trim();
+			double tempFahrenheit = Double.parseDouble(parts[1].trim());
+			String uses = parts[2].trim();
 
+			this.setAll(name, tempFahrenheit, uses);
+		} catch (NumberFormatException e) {
+			throw new IllegalArgumentException("Error parsing numeric value in CSV line: " + csvLine, e);
+		}
+	}
 
 	// MUTATORS/SETTERS
 	public boolean setName(String name) {
-		if(name == null || name.length() == 0) {
+		if (name == null || name.length() == 0) {
 			return false;
 		} else {
 			this.name = name;
@@ -49,7 +66,7 @@ public class Plant {
 	}
 
 	public boolean setTempFahrenheit(double tempFahrenheit) {
-		if(tempFahrenheit < -459.67 || tempFahrenheit > 451.0 ) {
+		if (tempFahrenheit < -459.67 || tempFahrenheit > 451.0) {
 			return false;
 		} else {
 			this.tempFahrenheit = tempFahrenheit;
@@ -58,7 +75,7 @@ public class Plant {
 	}
 
 	public boolean setUses(String uses) {
-		if(uses == null || uses.length() == 0) {
+		if (uses == null || uses.length() == 0) {
 			return false;
 		} else {
 			this.uses = uses;
@@ -70,22 +87,22 @@ public class Plant {
 		String nameBackup = this.name, usesBackup = this.uses;
 		double tempBackup = this.tempFahrenheit;
 
-		if(!this.setName(name)) {
+		if (!this.setName(name)) {
 			this.name = nameBackup;
 			return false;
 		}
 
-		if(!this.setTempFahrenheit(tempFahrenheit)) {
+		if (!this.setTempFahrenheit(tempFahrenheit)) {
 			this.tempFahrenheit = tempBackup;
 			return false;
 		}
 
-		if(!this.setUses(uses)) {
+		if (!this.setUses(uses)) {
 			this.uses = usesBackup;
 			return false;
 		}
 
-		return true;//only happens if all 3 setters return true and do their jobs
+		return true;// only happens if all 3 setters return true and do their jobs
 	}
 
 	// ACCESSORS/GETTERS
@@ -101,24 +118,24 @@ public class Plant {
 		return this.uses;
 	}
 
-	//OTHER REQUIRED METHODS
+	// OTHER REQUIRED METHODS
 	@Override
 	public boolean equals(Object other) {
-		if(other == null || other.getClass() != this.getClass()) {
+		if (other == null || other.getClass() != this.getClass()) {
 			return false;
 		} else {
 			Plant otherPlant = (Plant) other;
 
 			return this.name.equals(otherPlant.name) &&
-				Double.compare(this.tempFahrenheit, otherPlant.tempFahrenheit) == 0 &&
-				this.uses.equals(otherPlant.uses);
+					Double.compare(this.tempFahrenheit, otherPlant.tempFahrenheit) == 0 &&
+					this.uses.equals(otherPlant.uses);
 		}
 	}
 
 	@Override
 	public String toString() {
 		return "name: " + this.name + "\n" +
-			"temp: " + this.tempFahrenheit + "°F\n" +
-			"uses: " + this.uses;
+				"temp: " + this.tempFahrenheit + "°F\n" +
+				"uses: " + this.uses;
 	}
 }
